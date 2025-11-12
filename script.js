@@ -90,7 +90,7 @@ const BASE_RPC_URL = 'https://mainnet.base.org';
 // Update contract address in footer
 const contractAddressElement = document.getElementById('contract-address');
 if (contractAddressElement) {
-    contractAddressElement.textContent = CONTRACT_ADDRESS;
+    contractAddressElement.textContent = BASE_TOKEN_ADDRESS;
 }
 
 // Fetch live stats from DexScreener
