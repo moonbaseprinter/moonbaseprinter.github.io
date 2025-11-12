@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MoonbasePrinter ($MBP) - The meme token that rewards holders with $MOONBASE tokens on Base Chain. Hold, earn, and join the moon mission! 🚀">
+    <meta name="keywords" content="MoonbasePrinter, MBP, MOONBASE, Base Chain, meme token, crypto, rewards">
+    <meta property="og:title" content="MoonbasePrinter ($MBP) - Printing Moonbase Rewards on Base Chain">
+    <meta property="og:description" content="Hold $MBP — Earn $MOONBASE — Join the Moon Mission 🌕">
+    <meta property="og:image" content="./media/banner.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>MoonbasePrinter ($MBP) - Printing Moonbase Rewards on Base Chain 🚀</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="./media/logo.png" alt="MoonbasePrinter Logo" class="nav-logo">
+                <span class="logo-text">MoonbasePrinter</span>
+            </div>
+            <div class="nav-links">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#tokenomics" class="nav-link">Tokenomics</a>
+                <a href="#stats" class="nav-link">Stats</a>
+                <a href="#rewards" class="nav-link">Rewards</a>
+                <a href="#community" class="nav-link">Community</a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-logo-container">
+                <img src="./media/logo.png" alt="MoonbasePrinter Logo" class="hero-logo">
+            </div>
+            <h1 class="hero-title">
+                Printing Moonbase Rewards<br>on the Base Chain 🚀
+            </h1>
+            <p class="hero-tagline">
+                Hold $MBP — Earn $MOONBASE — Join the Moon Mission 🌕
+            </p>
+            <div class="hero-buttons">
+                <a href="#community" class="btn btn-primary">Buy Now</a>
+                <a href="https://dexscreener.com/base/0x70ae9b237c2a86716b713f5fae6a9d045384a66e" class="btn btn-secondary" id="chart-link" target="_blank" rel="noopener noreferrer">View Chart</a>
+                <a href="#community" class="btn btn-outline">Join Community</a>
+            </div>
+            <div class="powered-by">
+                <img src="./media/base.svg" alt="Base Chain" class="base-logo">
+                <span>Powered by Base</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">What is MoonbasePrinter?</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-description">
+                        MoonbasePrinter ($MBP) is the meme token that rewards loyal holders with $MOONBASE tokens. Built on the Base Chain, it combines the excitement of memes with real token utility. Just hold and watch your rewards print — straight to the moon! 🚀
+                    </p>
+                </div>
+                <div class="about-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">💎</div>
+                        <h3>Hold</h3>
+                        <p>Simply hold $MBP tokens in your wallet</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3>Earn</h3>
+                        <p>Automatically receive $MOONBASE rewards</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌕</div>
+                        <h3>Moonbase</h3>
+                        <p>Watch your rewards accumulate over time</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tokenomics Section -->
+    <section class="tokenomics" id="tokenomics">
+        <div class="container">
+            <h2 class="section-title">Tokenomics</h2>
+            <div class="tokenomics-content">
+                <div class="tokenomics-grid">
+                    <div class="tokenomics-card">
+                        <div class="tokenomics-icon">📊</div>
+                        <h3>Total Supply</h3>
+                        <p class="tokenomics-value" id="total-supply">1,000,000,000</p>
+                        <p class="tokenomics-label">$MBP</p>
+                    </div>
+                    <div class="tokenomics-card">
+                        <div class="tokenomics-icon">🛒</div>
+                        <h3>Buy Tax</h3>
+                        <p class="tokenomics-value">4%</p>
+                        <p class="tokenomics-label">Per Transaction</p>
+                    </div>
+                    <div class="tokenomics-card">
+                        <div class="tokenomics-icon">💸</div>
+                        <h3>Sell Tax</h3>
+                        <p class="tokenomics-value">0%</p>
+                        <p class="tokenomics-label">Per Transaction</p>
+                    </div>
+                    <div class="tokenomics-card">
+                        <div class="tokenomics-icon">🎁</div>
+                        <h3>Rewards</h3>
+                        <p class="tokenomics-value">2%</p>
+                        <p class="tokenomics-label">To Holders</p>
+                    </div>
+                </div>
+                <div class="tokenomics-breakdown">
+                    <h3>Tax Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Rewards Distribution</span>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" style="width: 50%; background: linear-gradient(90deg, #0052FF, #00D4FF);"></div>
+                        </div>
+                        <span class="breakdown-value">50%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Marketing</span>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" style="width: 50%; background: linear-gradient(90deg, #0052FF, #4A90E2);"></div>
+                        </div>
+                        <span class="breakdown-value">50%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Stats Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <h2 class="section-title">Live Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <h3>Market Cap</h3>
+                    <p class="stat-value" id="market-cap">$0</p>
+                    <p class="stat-label">USD</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💹</div>
+                    <h3>24h Volume</h3>
+                    <p class="stat-value" id="volume-24h">$0</p>
+                    <p class="stat-label">USD</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💵</div>
+                    <h3>Price</h3>
+                    <p class="stat-value" id="price">$0.0000</p>
+                    <p class="stat-label">USD</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <h3>Holders</h3>
+                    <p class="stat-value" id="holders">0</p>
+                    <p class="stat-label">Addresses</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <h3>Transactions</h3>
+                    <p class="stat-value" id="transactions">0</p>
+                    <p class="stat-label">Total</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <h3>Liquidity</h3>
+                    <p class="stat-value" id="liquidity">$0</p>
+                    <p class="stat-label">USD</p>
+                </div>
+            </div>
+            <div class="stats-refresh">
+                <span class="refresh-indicator">🔄 Auto-refreshing every 60 seconds</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Tracker Section -->
+    <section class="rewards" id="rewards">
+        <div class="container">
+            <h2 class="section-title">Rewards Distributed</h2>
+            <div class="rewards-content">
+                <div class="rewards-main">
+                    <div class="rewards-card">
+                        <div class="rewards-icon">🎁</div>
+                        <h3>Total $MOONBASE Distributed</h3>
+                        <p class="rewards-value" id="rewards-distributed">0</p>
+                        <p class="rewards-label">$MOONBASE Tokens</p>
+                    </div>
+                    <div class="rewards-progress">
+                        <div class="progress-header">
+                            <span>Rewards Progress</span>
+                            <span class="progress-percentage" id="progress-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rewards-info">
+                    <div class="info-item">
+                        <span class="info-label">Average Reward per Holder</span>
+                        <span class="info-value" id="avg-reward">0 $MOONBASE</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Last Distribution</span>
+                        <span class="info-value" id="last-distribution">--</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Next Distribution</span>
+                        <span class="info-value" id="next-distribution">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community / CTA Section -->
+    <section class="community" id="community">
+        <div class="container">
+            <h2 class="section-title">Join the Moon Mission</h2>
+            <p class="community-subtitle">Get involved, stay updated, and be part of the MoonbasePrinter community!</p>
+            <div class="community-buttons">
+                <a href="https://baseswap.fi/swap?inputCurrency=ETH&outputCurrency=0x2A11eD9626a9Fd300bAB8BBED1592eA072e242Ae" class="community-btn" id="buy-baseswap" target="_blank" rel="noopener noreferrer">
+                    <span class="btn-icon">🛒</span>
+                    <span>Buy on BaseSwap</span>
+                </a>
+                <a href="https://dexscreener.com/base/0x70ae9b237c2a86716b713f5fae6a9d045384a66e" class="community-btn" id="view-dexscreener" target="_blank" rel="noopener noreferrer">
+                    <span class="btn-icon">📊</span>
+                    <span>View on DexScreener</span>
+                </a>
+                <a href="https://t.me/MoonBasePrinter" class="community-btn" id="join-telegram" target="_blank" rel="noopener noreferrer">
+                    <span class="btn-icon">💬</span>
+                    <span>Join Telegram</span>
+                </a>
+                <a href="https://x.com/moonbaseprinter" class="community-btn" id="follow-twitter" target="_blank" rel="noopener noreferrer">
+                    <span class="btn-icon">🐦</span>
+                    <span>Follow on Twitter/X</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="./media/logo.png" alt="MoonbasePrinter Logo" class="footer-logo-img">
+                        <span class="footer-logo-text">MoonbasePrinter</span>
+                    </div>
+                    <p class="footer-tagline">Printing Moonbase Rewards on Base Chain 🚀</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#tokenomics">Tokenomics</a></li>
+                        <li><a href="#stats">Live Stats</a></li>
+                        <li><a href="#rewards">Rewards</a></li>
+                        <li><a href="#community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contract Address</h4>
+                    <div class="contract-address">
+                        <code id="contract-address">0x70ae9b237c2a86716b713f5fae6a9d045384a66e</code>
+                        <button class="copy-btn" id="copy-contract" aria-label="Copy contract address">
+                            <span class="copy-icon">📋</span>
+                        </button>
+                    </div>
+                    <p class="contract-note">Always verify the contract address before trading</p>
+                </div>
+                <div class="footer-section">
+                    <div class="powered-by-footer">
+                        <img src="./media/base.svg" alt="Base Chain" class="base-logo-footer">
+                        <span>Powered by Base Chain</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="disclaimer">
+                    MoonbasePrinter is a community-driven meme token project. Always DYOR (Do Your Own Research). This is not financial advice.
+                </p>
+                <p class="copyright">© 2024 MoonbasePrinter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
