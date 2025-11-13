@@ -303,7 +303,9 @@ function updateStat(elementId, value, formatter) {
 
 // Rewards Tracker
 let rewardsDistributed = 0;
+let rewardsDistributedUSD = 0; // USD value of rewards
 const rewardsTarget = 10000000; // 10M MOONBASE tokens
+let ethPriceUSD = 0; // ETH price in USD
 
 // Function to get function selector for a public variable getter
 // For uint256 public totalDistributed, the getter is totalDistributed()
@@ -316,116 +318,150 @@ function getFunctionSelector(functionName) {
     return selectors[functionName] || null;
 }
 
-// Read totalDistributed from smart contract on Base chain
+// ABI for totalDistributed() function
+// For a public uint256 variable, Solidity auto-generates: function totalDistributed() public view returns (uint256)
+const REWARDS_CONTRACT_ABI = [
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "totalDistributed",
+        "outputs": [{"name": "", "type": "uint256"}],
+        "type": "function"
+    }
+];
+
+// Read totalDistributed from smart contract using ethers.js
 async function fetchTotalDistributed() {
-    try {
-        console.log('Fetching totalDistributed from contract...', REWARDS_CONTRACT_ADDRESS);
-        
-        // Function selector for totalDistributed() 
-        // This is the first 4 bytes of keccak256("totalDistributed()")
-        // If this doesn't work, we may need to calculate it or get it from the contract ABI
-        const functionSelector = '0x5c60da1b';
-        
-        // Try multiple RPC endpoints for reliability
-        const rpcEndpoints = [
-            'https://mainnet.base.org',
-            'https://base.llamarpc.com',
-            'https://base.gateway.tenderly.co'
-        ];
-        
-        let lastError = null;
-        
-        for (const rpcUrl of rpcEndpoints) {
-            try {
-                // Prepare the RPC call
-                const rpcPayload = {
-                    jsonrpc: '2.0',
-                    method: 'eth_call',
-                    params: [
-                        {
-                            to: REWARDS_CONTRACT_ADDRESS,
-                            data: functionSelector
-                        },
-                        'latest'
-                    ],
-                    id: 1
-                };
-                
-                const response = await fetch(rpcUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(rpcPayload)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`RPC call failed: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error.message || 'RPC error');
-                }
-                
-                if (data.result && data.result !== '0x') {
-                    // Convert hex result to BigInt, then to number
-                    // Remove '0x' prefix and parse as hex
-                    const hexValue = data.result.startsWith('0x') ? data.result.slice(2) : data.result;
-                    const totalDistributed = BigInt('0x' + hexValue);
-                    
-                    console.log('Total distributed (raw):', totalDistributed.toString());
-                    
-                    // The contract stores totalDistributed as uint256
-                    // Convert to number (may lose precision for very large numbers, but should be fine for token amounts)
-                    rewardsDistributed = Number(totalDistributed);
-                    
-                    console.log('Total distributed:', rewardsDistributed);
-                    
-                    // Update the UI
-                    updateRewardsDisplay();
-                    
-                    return rewardsDistributed;
-                }
-            } catch (error) {
-                console.warn(`RPC endpoint ${rpcUrl} failed:`, error);
-                lastError = error;
-                continue; // Try next endpoint
-            }
-        }
-        
-        // If all RPC endpoints failed, throw the last error
-        throw lastError || new Error('All RPC endpoints failed');
-        
-    } catch (error) {
-        console.error('Failed to fetch totalDistributed from RPC:', error);
-        console.log('Attempting fallback: Basescan API...');
-        
-        // Fallback: Try Basescan API (may require API key for some endpoints)
-        try {
-            const basescanUrl = `https://api.basescan.org/api?module=proxy&action=eth_call&to=${REWARDS_CONTRACT_ADDRESS}&data=0x5c60da1b&tag=latest&apikey=YourApiKeyToken`;
-            const response = await fetch(basescanUrl);
-            
-            if (response.ok) {
-                const data = await response.json();
-                if (data.result && data.result !== '0x') {
-                    const hexValue = data.result.startsWith('0x') ? data.result.slice(2) : data.result;
-                    rewardsDistributed = Number(BigInt('0x' + hexValue));
-                    console.log('Total distributed (from Basescan):', rewardsDistributed);
-                    updateRewardsDisplay();
-                    return rewardsDistributed;
-                }
-            }
-        } catch (basescanError) {
-            console.error('Basescan fallback also failed:', basescanError);
-        }
-        
-        // If all methods failed, keep previous value or use 0
-        console.warn('Using previous rewardsDistributed value or 0');
-        updateRewardsDisplay();
+    // Check if ethers is available
+    if (typeof ethers === 'undefined') {
+        console.error('ethers.js library not loaded');
         return null;
     }
+    
+    // Public RPC endpoints for Base chain
+    const rpcEndpoints = [
+        'https://mainnet.base.org',
+        'https://base.llamarpc.com',
+        'https://base-rpc.publicnode.com'
+    ];
+    
+    for (const rpcUrl of rpcEndpoints) {
+        try {
+            console.log(`Fetching totalDistributed from ${rpcUrl}...`);
+            
+            // Create provider
+            const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+            
+            // Create contract instance with ABI
+            const contract = new ethers.Contract(
+                REWARDS_CONTRACT_ADDRESS,
+                REWARDS_CONTRACT_ABI,
+                provider
+            );
+            
+            // Call the function directly - just like in Python!
+            // Try different possible function names
+            let totalDistributed;
+            
+            try {
+                totalDistributed = await contract.totalDistributed();
+            } catch (nameError) {
+                // Try alternative names
+                console.log('totalDistributed() failed, trying alternatives...');
+                try {
+                    totalDistributed = await contract['totalDistributed']();
+                } catch (altError) {
+                    throw nameError; // Throw original error
+                }
+            }
+            
+            // Convert BigNumber to string/number (handle large numbers)
+            // The contract stores value in wei (10^18 wei = 1 ETH), so divide by 10^18
+            const WEI_TO_ETH = 1e18; // 10^18
+            
+            if (totalDistributed && typeof totalDistributed.toString === 'function') {
+                // Use toString() to avoid overflow errors with large numbers
+                const valueString = totalDistributed.toString();
+                
+                // Convert from wei to ETH by dividing by 10^18
+                // Use BigInt for precision with large numbers
+                const valueBigInt = BigInt(valueString);
+                const ethValue = Number(valueBigInt) / WEI_TO_ETH;
+                
+                rewardsDistributed = ethValue;
+            } else if (typeof totalDistributed === 'string') {
+                // Convert from wei to ETH
+                const valueBigInt = BigInt(totalDistributed);
+                rewardsDistributed = Number(valueBigInt) / WEI_TO_ETH;
+            } else if (typeof totalDistributed === 'number') {
+                rewardsDistributed = totalDistributed / WEI_TO_ETH;
+            } else {
+                const valueBigInt = BigInt(totalDistributed.toString());
+                rewardsDistributed = Number(valueBigInt) / WEI_TO_ETH;
+            }
+            
+            console.log('✅ Total distributed (ETH):', rewardsDistributed);
+            console.log('Raw value (wei):', totalDistributed.toString());
+            
+            // Fetch ETH price and convert to USD
+            await fetchETHPrice();
+            
+            // Calculate USD value
+            if (ethPriceUSD > 0) {
+                rewardsDistributedUSD = rewardsDistributed * ethPriceUSD;
+                console.log('✅ Total distributed (USD): $' + rewardsDistributedUSD.toFixed(2));
+            }
+            
+            updateRewardsDisplay();
+            return rewardsDistributed;
+            
+        } catch (error) {
+            console.warn(`Failed to fetch from ${rpcUrl}:`, error.message);
+            console.warn('Full error:', error);
+            
+            // If it's a specific error about the function, log it
+            if (error.message.includes('revert') || 
+                error.message.includes('not found') || 
+                error.message.includes('missing revert data') ||
+                error.code === 'CALL_EXCEPTION') {
+                console.error('Function might not exist or have different name');
+                console.error('Error code:', error.code);
+                console.error('Error reason:', error.reason);
+                console.error('Contract:', REWARDS_CONTRACT_ADDRESS);
+                console.error('Verify at: https://basescan.org/address/' + REWARDS_CONTRACT_ADDRESS);
+                console.error('Check the "Read Contract" tab to see available functions');
+            }
+            
+            continue; // Try next RPC endpoint
+        }
+    }
+    
+    // All RPC endpoints failed
+    console.error('❌ Failed to fetch totalDistributed from all RPC endpoints');
+    console.error('Contract:', REWARDS_CONTRACT_ADDRESS);
+    
+    updateRewardsDisplay();
+    return null;
+}
+
+// Fetch ETH price in USD from CoinGecko (free, no API key needed)
+async function fetchETHPrice() {
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.ethereum && data.ethereum.usd) {
+                ethPriceUSD = data.ethereum.usd;
+                console.log('ETH Price (USD): $' + ethPriceUSD);
+                return ethPriceUSD;
+            }
+        }
+    } catch (error) {
+        console.warn('Failed to fetch ETH price:', error);
+        // Try alternative: use price from DexScreener if available
+        // The WETH price from the pair data could be used
+    }
+    return 0;
 }
 
 // Update rewards display with current rewardsDistributed value
@@ -437,7 +473,25 @@ function updateRewardsDisplay() {
     const holders = parseInt(document.getElementById('holders').textContent.replace(/[^0-9]/g, '')) || 1250;
     
     if (rewardsElement) {
-        animateCounter(rewardsElement, rewardsDistributed, 2000, '', '');
+        // Display USD value if available, otherwise show ETH value
+        if (rewardsDistributedUSD > 0) {
+            animateCounter(rewardsElement, rewardsDistributedUSD, 2000, '$', '', formatCurrency);
+            // Update label
+            const rewardsLabel = document.getElementById('rewards-label');
+            if (rewardsLabel) {
+                rewardsLabel.textContent = 'USD Value';
+            }
+        } else {
+            // Show ETH value with formatting
+            animateCounter(rewardsElement, rewardsDistributed, 2000, '', ' ETH', (val) => {
+                return parseFloat(val).toFixed(6) + ' ETH';
+            });
+            // Update label
+            const rewardsLabel = document.getElementById('rewards-label');
+            if (rewardsLabel) {
+                rewardsLabel.textContent = 'ETH Value';
+            }
+        }
     }
     
     if (progressFill && progressPercentage) {
@@ -452,9 +506,9 @@ function updateRewardsDisplay() {
     }
     
     // Update last distribution time
+    const now = new Date();
     const lastDistribution = document.getElementById('last-distribution');
     if (lastDistribution) {
-        const now = new Date();
         lastDistribution.textContent = now.toLocaleString();
     }
     
